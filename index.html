@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>PHP-Mailer - Beispiele</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+<body>
+<h1>E-Mails mittels PHP-Skript versenden</h1>
+<h2>Grundlagen</h2>
+<p>Hierzu stellt PHP die Funktion <b>mail()</b> zur Verfügung. Als Vorraussetzung wird hierfür ein lokal installierter SMTP-Server benötigt.
+  Unter Linux bzw. bei den Providern ist dies meistens der Fall. </p>
+<h3>Die Funktion Mail</h3>
+<p><strong>mail ($to, $subject, $message [, $additional_headers]
+    )</strong></p>
+<p>R&uuml;ckgabe:<br />
+  0 (false): Es ist ein Fehler aufgetreten, die Mail wurde nicht an den SMTP-Server
+    &uuml;bergeben.<br />
+  1 (true):
+Die Mail wurde korrekt an den SMTP-Server &uuml;bergeben.</p>
+<p>Parameter:<br />
+<strong>$to: </strong>String der die Zieladresse beinhaltet<br />
+$<strong>subject: </strong>String mit dem Inhalt der Betreffzeile<br />
+<strong>$message</strong>: String mit dem Mailtext<br />
+<strong>$additional_headers</strong>: Optionaler Parameter, mit dem weiteren
+Mailkopfzeilen angegeben werden k&ouml;nnen (z.B. Ccc, Bcc, Reply-To, From , ..usw.).
+Die einzelnen Header-Parameter sind durch einen Zeilenumbruch ( \n) zutrennen.</p>
+<h2><a href="mailformular.html">Beispiel </a></h2>
+<pre>&lt;?php<br />  
+  $from=$HTTP_POST_VARS[&quot;recipient&quot;];
+
+  $fmtResponse= implode(&quot;&quot;, file(&quot;anmeldung_okay.html&quot;)); 
+  $fmtResponseerror= implode(&quot;&quot;, file(&quot;anmeldung_fehler.html&quot;));
+  $fmtMail= implode(&quot;&quot;, file(&quot;anmeldung.txt&quot;));
+
+  $str_logtext = &quot;Rechner: &quot; . gethostbyaddr($HTTP_SERVER_VARS[&quot;REMOTE_ADDR&quot;]) . &quot; (&quot; . date(&quot;d.m.Y - H:i&quot;) . &quot;)&quot;;
+
+  $fmtMail= str_replace(&quot;&lt;loginfo&gt;&quot;, $str_logtext, $fmtMail);
+
+
+  if ($HTTP_POST_VARS[&quot;Email&quot;] != &quot;&quot;) {
+       $from=$HTTP_POST_VARS[&quot;Email&quot;];
+  }
+  $from=&quot;From: $from\nBCc: geier99@web.de&quot;;
+
+  foreach($HTTP_POST_VARS as $key=&gt; $val) 
+     if (is_array($val))   $val = implode(&quot;, &quot;,$val); // wenn Array, dann Array zu String konvertieren
+
+     $fmtResponse= str_replace(&quot;&lt;$key&gt;&quot;, $val, $fmtResponse);
+     $fmtMail= str_replace(&quot;&lt;$key&gt;&quot;, $val, $fmtMail);
+     $fmtResponseerror= str_replace(&quot;&lt;$key&gt;&quot;, $val, $fmtResponseerror);
+  }
+  // eventuell nicht ausgef&uuml;llte Felder mit keine Angabe belegen
+    $fmtMail= str_replace(&quot;&lt;Anfrage&gt;&quot;, &quot;keine Angabe&quot;, $fmtMail);<br />    $fmtMail= str_replace(&quot;&lt;Anrede&gt;&quot;, &quot;keine Angabe&quot;, $fmtMail);<br />    $fmtMail= str_replace(&quot;&lt;Land&gt;&quot;, &quot;keine Angabe&quot;, $fmtMail);<br />    $fmtMail= str_replace(&quot;&lt;E-Mail&gt;&quot;, &quot;keine Angabe&quot;, $fmtMail);<br />    $fmtMail= str_replace(&quot;&lt;Vorname&gt;&quot;, &quot;keine Angabe&quot;, $fmtMail);<br />
+
+ if ( @mail($HTTP_POST_VARS[&quot;recipient&quot;], $HTTP_POST_VARS[&quot;subject&quot;], $fmtMail, $from)) {<br />     echo $fmtResponse;<br /> }<br /> else { <br />     echo  $fmtResponseerror;<br /> }</pre>
+?&gt;</p>
+&nbsp;
+<div align="left">
+<hr>
+<span style="font-size: 9px; text-align: right;">&copy; by Geier99 2015</span>
+<hr>
+</div>
+</body>
+</html>
