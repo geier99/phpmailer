@@ -24,7 +24,7 @@
 
   # Vorbelegung, für den Fall das "subject", "recipient" und "Email" nicht im HTML-Formular definiert sind!
 ############################################################
-  $to="geier99@web.de";  # <<===================== anpassen:   Empfänger des Kontaktformulars
+  $to="geier99@gmx.de";  # <<===================== anpassen:   Empfänger des Kontaktformulars
 ############################################################
 
   $from=$to;
